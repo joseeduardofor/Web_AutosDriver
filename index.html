@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutosDriver | Catálogo Elite AutosDriver</title>
+
+<!-- Bootstrap 5.3.3 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- FontAwesome 6.5.1 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<!-- Estilos propios -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR FIJO / GLASSMORPHISM -->
+<header id="mainNav" class="navbar-glass">
+  <div class="nav-top container-fluid px-3 px-md-5">
+    <a class="brand" href="#top">
+      <i class="fa-solid fa-car-side"></i> AutosDriver
+    </a>
+
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="searchInput" type="text" placeholder="Buscar por marca o modelo...">
+    </div>
+
+    <button class="cart-pill" data-bs-toggle="modal" data-bs-target="#cartModal">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+  </div>
+
+  <nav class="tabs-wrap container-fluid px-3 px-md-5">
+    <button class="tab-btn active" data-target="vehiculos"><i class="fa-solid fa-car"></i> Vehículos</button>
+    <button class="tab-btn" data-target="motos"><i class="fa-solid fa-motorcycle"></i> Motos</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <img src="logo.jpeg" alt="AutosDriver" class="hero-logo">
+  <h1>AutosDriver</h1>
+  <p>"Descubre vehículos de lujo disponibles para alquiler o compra, con el respaldo y la experiencia única de AutosDriver."</p>
+</section>
+
+<!-- CATALOGO -->
+<main class="container catalog-container">
+  <section id="panel-vehiculos" class="catalog-panel active">
+    <div id="gridVehiculos" class="catalog-grid"></div>
+  </section>
+  <section id="panel-motos" class="catalog-panel">
+    <div id="gridMotos" class="catalog-grid"></div>
+  </section>
+</main>
+
+<!-- BOTON FLOTANTE CARRITO -->
+<button class="fab-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+  <i class="fa-solid fa-cart-shopping"></i>
+  <span id="fabCartCount" class="fab-badge">0</span>
+</button>
+
+<!-- MODAL ALQUILER -->
+<div class="modal fade" id="rentModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content dark-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">Alquilar vehículo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="rentModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-accent" id="confirmRentBtn">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CARRITO -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content dark-modal">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-cart-shopping"></i> Mi carrito</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="cartModalBody">
+        <p class="text-muted text-center">Tu carrito está vacío.</p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <h5 class="mb-0">Total: <span id="cartTotal" class="text-accent">$0.00</span></h5>
+        <div>
+          <button class="btn btn-outline-danger me-2" id="clearCartBtn">Vaciar</button>
+          <button class="btn btn-accent" id="generatePdfBtn"><i class="fa-solid fa-file-pdf"></i> Generar Factura/Contrato</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- CHECKOUT / FACTURACIÓN MODAL -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Formulario de Facturación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-7">
+                  <form id="billingForm">
+                    <h6>Datos del Comprador</h6>
+                    <div class="row g-2">
+                      <div class="col-sm-6"><input class="form-control" id="buyerNombre" placeholder="Nombre" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerApellido" placeholder="Apellido" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerId" placeholder="Cédula o Pasaporte" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerEmail" placeholder="Correo electrónico" type="email" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerPhone" placeholder="Teléfono" required></div>
+                      <div class="col-12"><input class="form-control" id="buyerAddress" placeholder="Dirección completa" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerCity" placeholder="Ciudad" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerProvince" placeholder="Provincia" required></div>
+                      <div class="col-sm-6"><input class="form-control" id="buyerZip" placeholder="Código Postal (opcional)"></div>
+                    </div>
+
+                    <hr>
+                    <h6>Método de Pago</h6>
+                    <div class="row g-2 align-items-center">
+                      <div class="col-12">
+                        <select id="paymentMethod" class="form-select" required>
+                          <option value="efectivo">Efectivo</option>
+                          <option value="transferencia">Transferencia bancaria</option>
+                          <option value="tarjeta_credito">Tarjeta de crédito</option>
+                          <option value="tarjeta_debito">Tarjeta de débito</option>
+                          <option value="financiamiento">Financiamiento</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div id="financingFields" style="display:none;margin-top:10px;">
+                      <div class="row g-2">
+                        <div class="col-sm-6"><input id="finBanco" class="form-control" placeholder="Banco / Entidad"></div>
+                        <div class="col-sm-6"><input id="finInicial" class="form-control" type="number" min="0" placeholder="Inicial"></div>
+                        <div class="col-sm-6"><input id="finMonto" class="form-control" type="number" min="0" placeholder="Monto financiado"></div>
+                        <div class="col-sm-6"><input id="finCuotas" class="form-control" type="number" min="1" placeholder="Cantidad de cuotas"></div>
+                        <div class="col-12"><div class="form-text">Cuota mensual: <span id="finCuotaMensual">$0.00</span></div></div>
+                      </div>
+                    </div>
+
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="form-text text-muted">Los campos marcados con * son obligatorios.</div>
+                      <div>
+                        <button type="button" id="confirmBillingBtn" class="btn btn-primary">Confirmar y Generar Factura</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-md-5">
+                  <h6>Vista previa del/los vehículo(s)</h6>
+                  <div id="checkoutPreview">
+                    <!-- contenido generado por JS -->
+                  </div>
+                  <hr>
+                  <div id="checkoutTotals">
+                    <!-- totales generados por JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<style>
+    footer {
+      background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+      color: #fff;
+      padding: 50px 0 30px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    }
+    footer img.footer-avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 4px solid #ffffff;
+      margin-bottom: 20px;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    footer img.footer-avatar:hover {
+      transform: scale(1.05);
+      border-color: #f8f9fa;
+    }
+    footer h4 {
+      font-weight: 800;
+      color: #00bfff;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    footer p.bio {
+      font-size: 16px;
+      color: #ddd;
+      max-width: 800px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+    .tech-stack {
+      display: inline-block;
+      background: rgba(0, 191, 255, 0.1);
+      color: #00bfff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+      margin: 4px;
+      border: 1px solid rgba(0, 191, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+    .tech-stack:hover {
+      background: rgba(0, 191, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .tech-stack i { margin-right: 6px; font-size: 15px; }
+    .keyword { color: #00d2ff; font-weight: bold; }
+    .keyword-ai { color: #ff007f; font-weight: bold; }
+    .social-icons-footer { margin: 25px 0; }
+    .social-icons-footer a {
+      color: #fff;
+      font-size: 24px;
+      margin: 0 12px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .social-icons-footer a:hover {
+      color: #00bfff;
+      transform: translateY(-5px) scale(1.1);
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }
+    .btn-youtube {
+      background: linear-gradient(90deg, #ff0000, #cc0000);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255,0,0,0.3);
+    }
+    .btn-youtube:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255,0,0,0.5);
+    }
+  </style>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <img src="foto.jpg" class="footer-avatar" alt="Ing. Jose Eduardo Jaquez">
+      <h4>Ing. Jose Eduardo Jaquez</h4>
+     <p class="bio">
+  <span class="keyword">Desarrollador Full Stack</span>, 
+  <span style="color: #00ff88; font-weight: bold;">Cibernetico</span> y 
+  <span style="color: #ff8800; font-weight: bold;">SQL serve</span>, 
+  además de <span class="keyword-ai">Estudiante universitario en tecnologías</span>. 
+  Apasionado por la innovación, la <span class="keyword-ai">Inteligencia Artificial</span> y la inovacion educación digital.<br>
+  💡 Creador de contenido especializado en arquitectura de software, bases de datos avanzadas, análisis de datos y soluciones tecnológicas modernas.
+</p>
+
+      
+      <div class="mb-4">
+        <span class="tech-stack"><i class="fab fa-html5" style="color: #e34f26;"></i> HTML</span>
+        <span class="tech-stack"><i class="fab fa-css3-alt" style="color: #1572b6;"></i> CSS</span>
+        <span class="tech-stack"><i class="fab fa-js" style="color: #f7df1e;"></i> JS</span>
+        <span class="tech-stack"><i class="fab fa-bootstrap" style="color: #7952b3;"></i> Bootstrap</span>
+        <span class="tech-stack"><i class="fab fa-php" style="color: #777bb4;"></i> C#</span>
+        <span class="tech-stack"><i class="fab fa-laravel" style="color: #ff2d20;"></i> Laravel</span>
+        <span class="tech-stack"><i class="fas fa-code"></i> C#</span>
+        <span class="tech-stack"><i class="fab fa-microsoft"></i> .NET MAUI</span>
+        <span class="tech-stack"><i class="fab fa-python" style="color: #3776ab;"></i> Python</span>
+        <span class="tech-stack"><i class="fas fa-database" style="color: #cc292b;"></i> SQL Server</span>
+        <span class="tech-stack"><i class="fas fa-file-excel" style="color: #1D6F42;"></i> Excel</span>
+        <span class="tech-stack"><i class="fas fa-chart-bar" style="color: #f2c811;"></i> woerd</span>
+      </div>
+
+      <div class="social-icons-footer">
+        <a href="https://www.youtube.com/@JoseEduardoJaquezEncarnacion" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.youtube.com/@JoseEduardoJaquezEncarnacion" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="" target="_blank" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+
+      <button class="btn-youtube" onclick="window.open('https://www.youtube.com/@JoseEduardoJaquezEncarnacion')">
+        🎥 Suscríbete a mi canal
+      </button>
+
+      <hr class="my-4" style="border-color:#333;">
+      <p class="mb-0" style="color: #888; font-size: 14px;">© 2026 Catálogo de Vehículos Premium | Arquitectura por <span style="color: #ccc; font-weight: bold;">Ing. Jose Jaquez</span></p>
+    </div>
+  </footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
